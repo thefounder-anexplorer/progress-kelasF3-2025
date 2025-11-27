@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -548,6 +549,111 @@
             min-width: 200px;
         }
         
+        .grade-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .grade-Aplus { background-color: #27ae60; color: white; }
+        .grade-A { background-color: #2ecc71; color: white; }
+        .grade-Aminus { background-color: #2ecc71; color: white; opacity: 0.9; }
+        .grade-Bplus { background-color: #f39c12; color: white; }
+        .grade-B { background-color: #f39c12; color: white; opacity: 0.9; }
+        .grade-Bminus { background-color: #f39c12; color: white; opacity: 0.8; }
+        .grade-Cplus { background-color: #e67e22; color: white; }
+        .grade-C { background-color: #e67e22; color: white; opacity: 0.9; }
+        .grade-Cminus { background-color: #e67e22; color: white; opacity: 0.8; }
+        .grade-D { background-color: #e74c3c; color: white; }
+        
+        .assignment-details {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .student-grade-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .student-grade-item:last-child {
+            border-bottom: none;
+        }
+        
+        .grade-select {
+            width: 80px;
+            padding: 4px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        
+        .grade-input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .grade-type-select {
+            width: 120px;
+        }
+        
+        .grade-value-input {
+            width: 80px;
+        }
+        
+        .grade-display {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+        
+        .numeric-grade {
+            font-size: 12px;
+            color: #666;
+            margin-left: 5px;
+        }
+        
+        .incomplete-assignments {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .incomplete-assignment-list {
+            margin-top: 5px;
+            padding-left: 20px;
+        }
+        
+        .incomplete-assignment-item {
+            margin-bottom: 5px;
+            color: #856404;
+        }
+        
+        .expand-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 12px;
+            padding: 2px 5px;
+            margin-left: 5px;
+        }
+        
+        .expand-btn:hover {
+            text-decoration: underline;
+        }
+        
         @media (max-width: 768px) {
             .stats {
                 flex-direction: column;
@@ -590,6 +696,15 @@
             .download-options button {
                 min-width: 100%;
             }
+            
+            .grade-input-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .grade-type-select, .grade-value-input {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -613,21 +728,6 @@
                 <h2>Progress Keaktifan Siswa</h2>
                 <p>Berdasarkan poin bintang yang diperoleh dari partisipasi di kelas</p>
                 
-                <div class="stats">
-                    <div class="stat-card">
-                        <h3>Rata-rata Poin</h3>
-                        <div class="stat-value" id="avgPoints">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Poin Tertinggi</h3>
-                        <div class="stat-value" id="maxPoints">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Total Siswa Aktif</h3>
-                        <div class="stat-value" id="activeStudents">0</div>
-                    </div>
-                </div>
-                
                 <div id="pointsProgressList">
                     <!-- Daftar progress keaktifan akan ditampilkan di sini -->
                 </div>
@@ -637,21 +737,6 @@
             <div id="assignmentsProgress" class="progress-section">
                 <h2>Progress Penyelesaian Tugas</h2>
                 <p>Status kelengkapan tugas yang diberikan kepada siswa</p>
-                
-                <div class="stats">
-                    <div class="stat-card">
-                        <h3>Tugas Lengkap</h3>
-                        <div class="stat-value" id="completedTasks">0%</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Total Siswa</h3>
-                        <div class="stat-value" id="totalStudents">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Perlu Perhatian</h3>
-                        <div class="stat-value" id="incompleteStudents">0</div>
-                    </div>
-                </div>
                 
                 <div id="assignmentsProgressList">
                     <!-- Daftar progress tugas akan ditampilkan di sini -->
@@ -797,6 +882,7 @@
                         <th>Nama Siswa</th>
                         <th>Total Poin</th>
                         <th>Tugas Diselesaikan</th>
+                        <th>Rata-rata Nilai</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -820,6 +906,12 @@
             username: 'teacher',
             password: 'bismillah'
         };
+        
+        // Grade options lengkap
+        const LETTER_GRADE_OPTIONS = ['A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D'];
+        
+        // Grade type options
+        const GRADE_TYPE_OPTIONS = ['Huruf', 'Angka'];
         
         // Elemen DOM
         const loginBtn = document.getElementById('loginBtn');
@@ -852,12 +944,6 @@
         const assignmentsList = document.getElementById('assignmentsList');
         
         // Stat elements
-        const avgPointsElement = document.getElementById('avgPoints');
-        const maxPointsElement = document.getElementById('maxPoints');
-        const activeStudentsElement = document.getElementById('activeStudents');
-        const completedTasksElement = document.getElementById('completedTasks');
-        const totalStudentsElement = document.getElementById('totalStudents');
-        const incompleteStudentsElement = document.getElementById('incompleteStudents');
         const teacherTotalStudentsElement = document.getElementById('teacherTotalStudents');
         const teacherAvgPointsElement = document.getElementById('teacherAvgPoints');
         const teacherCompletedTasksElement = document.getElementById('teacherCompletedTasks');
@@ -975,6 +1061,15 @@
             updateStudentView();
         }
         
+        // Fungsi untuk mendapatkan tugas yang belum dikerjakan oleh siswa
+        function getIncompleteAssignments(studentName) {
+            if (assignments.length === 0) return [];
+            
+            return assignments.filter(assignment => 
+                !assignment.completedStudents.includes(studentName)
+            );
+        }
+        
         // Fungsi download data siswa
         function downloadStudentsExcel() {
             if (students.length === 0) {
@@ -983,7 +1078,7 @@
             }
             
             const worksheetData = [
-                ['Nama Siswa', 'Total Poin', 'Persentase Keaktifan', 'Tugas Diselesaikan', 'Total Tugas', 'Persentase Tugas']
+                ['Nama Siswa', 'Total Poin', 'Persentase Keaktifan', 'Tugas Diselesaikan', 'Total Tugas', 'Persentase Tugas', 'Rata-rata Nilai (Huruf)', 'Rata-rata Nilai (Angka)']
             ];
             
             const totalAssignments = assignments.length;
@@ -994,6 +1089,8 @@
                     Math.round((student.points / (totalAssignments * 10)) * 100) : 0;
                 const assignmentPercentage = totalAssignments > 0 ? 
                     Math.round((completedAssignments / totalAssignments) * 100) : 0;
+                const averageGrade = calculateStudentAverageGrade(student.name);
+                const averageNumericGrade = calculateStudentAverageNumericGrade(student.name);
                 
                 worksheetData.push([
                     student.name,
@@ -1001,7 +1098,9 @@
                     `${activityPercentage}%`,
                     completedAssignments,
                     totalAssignments,
-                    `${assignmentPercentage}%`
+                    `${assignmentPercentage}%`,
+                    averageGrade || '-',
+                    averageNumericGrade || '-'
                 ]);
             });
             
@@ -1024,12 +1123,14 @@
             }
             
             const worksheetData = [
-                ['Nama Tugas', 'Tanggal', 'Jumlah Siswa Selesai', 'Total Siswa', 'Persentase Penyelesaian', 'Siswa yang Menyelesaikan']
+                ['Nama Tugas', 'Tanggal', 'Jumlah Siswa Selesai', 'Total Siswa', 'Persentase Penyelesaian', 'Rata-rata Nilai (Huruf)', 'Rata-rata Nilai (Angka)', 'Siswa yang Menyelesaikan']
             ];
             
             assignments.forEach(assignment => {
                 const completionRate = Math.round((assignment.completedStudents.length / students.length) * 100);
                 const studentsList = assignment.completedStudents.join(', ');
+                const averageGrade = calculateAssignmentAverageGrade(assignment.id);
+                const averageNumericGrade = calculateAssignmentAverageNumericGrade(assignment.id);
                 
                 worksheetData.push([
                     assignment.title,
@@ -1037,6 +1138,8 @@
                     assignment.completedStudents.length,
                     students.length,
                     `${completionRate}%`,
+                    averageGrade || '-',
+                    averageNumericGrade || '-',
                     studentsList || '-'
                 ]);
             });
@@ -1070,6 +1173,8 @@
                 ['Rata-rata Poin', calculateAveragePoints()],
                 ['Total Tugas', assignments.length],
                 ['Rata-rata Penyelesaian Tugas', `${calculateAverageAssignmentCompletion()}%`],
+                ['Rata-rata Nilai Kelas (Huruf)', calculateClassAverageGrade()],
+                ['Rata-rata Nilai Kelas (Angka)', calculateClassAverageNumericGrade()],
                 ['Siswa dengan Poin Tertinggi', getTopStudent()],
                 [''],
                 ['STATISTIK DETAIL'],
@@ -1077,15 +1182,17 @@
                 ['Poin Terendah', getMinPoints()],
                 ['Siswa Aktif (poin > 0)', getActiveStudentsCount()],
                 ['Tugas dengan Penyelesaian Tertinggi', getBestAssignment()],
-                ['Tugas dengan Penyelesaian Terendah', getWorstAssignment()]
+                ['Tugas dengan Penyelesaian Terendah', getWorstAssignment()],
+                ['Tugas dengan Nilai Tertinggi', getBestGradedAssignment()],
+                ['Tugas dengan Nilai Terendah', getWorstGradedAssignment()]
             ];
             
             const summarySheet = XLSX.utils.aoa_to_sheet(summaryData);
             XLSX.utils.book_append_sheet(workbook, summarySheet, 'Ringkasan Kelas');
             
-            // Sheet 2: Data Siswa
+            // Sheet 2: Data Siswa dengan Nilai
             const studentsData = [
-                ['Nama Siswa', 'Total Poin', 'Tugas Diselesaikan', 'Total Tugas', 'Persentase Tugas', 'Status']
+                ['Nama Siswa', 'Total Poin', 'Tugas Diselesaikan', 'Total Tugas', 'Persentase Tugas', 'Rata-rata Nilai (Huruf)', 'Rata-rata Nilai (Angka)', 'Status']
             ];
             
             const totalAssignments = assignments.length;
@@ -1094,6 +1201,8 @@
                 const completedAssignments = student.completedAssignments ? student.completedAssignments.length : 0;
                 const assignmentPercentage = totalAssignments > 0 ? 
                     Math.round((completedAssignments / totalAssignments) * 100) : 0;
+                const averageGrade = calculateStudentAverageGrade(student.name);
+                const averageNumericGrade = calculateStudentAverageNumericGrade(student.name);
                 const status = assignmentPercentage === 100 ? 'Lengkap' : 
                               assignmentPercentage >= 70 ? 'Baik' :
                               assignmentPercentage >= 50 ? 'Cukup' : 'Perlu Perhatian';
@@ -1104,6 +1213,8 @@
                     completedAssignments,
                     totalAssignments,
                     `${assignmentPercentage}%`,
+                    averageGrade || '-',
+                    averageNumericGrade || '-',
                     status
                 ]);
             });
@@ -1111,26 +1222,56 @@
             const studentsSheet = XLSX.utils.aoa_to_sheet(studentsData);
             XLSX.utils.book_append_sheet(workbook, studentsSheet, 'Data Siswa');
             
-            // Sheet 3: Data Tugas
+            // Sheet 3: Data Tugas dengan Nilai
             if (assignments.length > 0) {
                 const assignmentsData = [
-                    ['Nama Tugas', 'Tanggal', 'Siswa Selesai', 'Total Siswa', 'Persentase']
+                    ['Nama Tugas', 'Tanggal', 'Siswa Selesai', 'Total Siswa', 'Persentase', 'Rata-rata Nilai (Huruf)', 'Rata-rata Nilai (Angka)']
                 ];
                 
                 assignments.forEach(assignment => {
                     const completionRate = Math.round((assignment.completedStudents.length / students.length) * 100);
+                    const averageGrade = calculateAssignmentAverageGrade(assignment.id);
+                    const averageNumericGrade = calculateAssignmentAverageNumericGrade(assignment.id);
                     
                     assignmentsData.push([
                         assignment.title,
                         assignment.date,
                         assignment.completedStudents.length,
                         students.length,
-                        `${completionRate}%`
+                        `${completionRate}%`,
+                        averageGrade || '-',
+                        averageNumericGrade || '-'
                     ]);
                 });
                 
                 const assignmentsSheet = XLSX.utils.aoa_to_sheet(assignmentsData);
                 XLSX.utils.book_append_sheet(workbook, assignmentsSheet, 'Data Tugas');
+            }
+            
+            // Sheet 4: Detail Nilai per Tugas
+            if (assignments.length > 0) {
+                const gradeDetailsData = [['Nama Siswa']];
+                
+                // Header: Nama semua tugas
+                assignments.forEach(assignment => {
+                    gradeDetailsData[0].push(assignment.title);
+                    gradeDetailsData[0].push(`${assignment.title} (Nilai)`);
+                });
+                
+                // Data: Nilai setiap siswa per tugas
+                students.forEach(student => {
+                    const row = [student.name];
+                    assignments.forEach(assignment => {
+                        const grade = assignment.grades && assignment.grades[student.name];
+                        const numericGrade = assignment.numericGrades && assignment.numericGrades[student.name];
+                        row.push(grade || '-');
+                        row.push(numericGrade || '-');
+                    });
+                    gradeDetailsData.push(row);
+                });
+                
+                const gradeDetailsSheet = XLSX.utils.aoa_to_sheet(gradeDetailsData);
+                XLSX.utils.book_append_sheet(workbook, gradeDetailsSheet, 'Detail Nilai');
             }
             
             // Download file
@@ -1154,6 +1295,162 @@
                 sum + (student.completedAssignments ? student.completedAssignments.length : 0), 0);
             
             return Math.round((totalCompleted / (students.length * totalAssignments)) * 100);
+        }
+        
+        function calculateClassAverageGrade() {
+            let totalGrades = 0;
+            let count = 0;
+            
+            assignments.forEach(assignment => {
+                if (assignment.grades) {
+                    Object.values(assignment.grades).forEach(grade => {
+                        if (grade) {
+                            totalGrades += gradeToNumber(grade);
+                            count++;
+                        }
+                    });
+                }
+            });
+            
+            return count > 0 ? numberToGrade(totalGrades / count) : '-';
+        }
+        
+        function calculateClassAverageNumericGrade() {
+            let totalGrades = 0;
+            let count = 0;
+            
+            assignments.forEach(assignment => {
+                if (assignment.numericGrades) {
+                    Object.values(assignment.numericGrades).forEach(grade => {
+                        if (grade !== null && grade !== undefined) {
+                            totalGrades += parseFloat(grade);
+                            count++;
+                        }
+                    });
+                }
+            });
+            
+            return count > 0 ? (totalGrades / count).toFixed(1) : '-';
+        }
+        
+        function calculateStudentAverageGrade(studentName) {
+            let totalGrades = 0;
+            let count = 0;
+            
+            assignments.forEach(assignment => {
+                if (assignment.grades && assignment.grades[studentName]) {
+                    totalGrades += gradeToNumber(assignment.grades[studentName]);
+                    count++;
+                }
+            });
+            
+            return count > 0 ? numberToGrade(totalGrades / count) : null;
+        }
+        
+        function calculateStudentAverageNumericGrade(studentName) {
+            let totalGrades = 0;
+            let count = 0;
+            
+            assignments.forEach(assignment => {
+                if (assignment.numericGrades && assignment.numericGrades[studentName] !== null && assignment.numericGrades[studentName] !== undefined) {
+                    totalGrades += parseFloat(assignment.numericGrades[studentName]);
+                    count++;
+                }
+            });
+            
+            return count > 0 ? (totalGrades / count).toFixed(1) : null;
+        }
+        
+        function calculateAssignmentAverageGrade(assignmentId) {
+            const assignment = assignments.find(a => a.id === assignmentId);
+            if (!assignment || !assignment.grades) return null;
+            
+            let totalGrades = 0;
+            let count = 0;
+            
+            Object.values(assignment.grades).forEach(grade => {
+                if (grade) {
+                    totalGrades += gradeToNumber(grade);
+                    count++;
+                }
+            });
+            
+            return count > 0 ? numberToGrade(totalGrades / count) : null;
+        }
+        
+        function calculateAssignmentAverageNumericGrade(assignmentId) {
+            const assignment = assignments.find(a => a.id === assignmentId);
+            if (!assignment || !assignment.numericGrades) return null;
+            
+            let totalGrades = 0;
+            let count = 0;
+            
+            Object.values(assignment.numericGrades).forEach(grade => {
+                if (grade !== null && grade !== undefined) {
+                    totalGrades += parseFloat(grade);
+                    count++;
+                }
+            });
+            
+            return count > 0 ? (totalGrades / count).toFixed(1) : null;
+        }
+        
+        function gradeToNumber(grade) {
+            const gradeMap = {
+                'A+': 4.0,
+                'A': 3.7,
+                'A-': 3.3,
+                'B+': 3.0,
+                'B': 2.7,
+                'B-': 2.3,
+                'C+': 2.0,
+                'C': 1.7,
+                'C-': 1.3,
+                'D': 1.0
+            };
+            return gradeMap[grade] || 0;
+        }
+        
+        function numberToGrade(number) {
+            if (number >= 3.85) return 'A+';
+            if (number >= 3.5) return 'A';
+            if (number >= 3.15) return 'A-';
+            if (number >= 2.85) return 'B+';
+            if (number >= 2.5) return 'B';
+            if (number >= 2.15) return 'B-';
+            if (number >= 1.85) return 'C+';
+            if (number >= 1.5) return 'C';
+            if (number >= 1.0) return 'C-';
+            return 'D';
+        }
+        
+        function numericToLetterGrade(numeric) {
+            if (numeric >= 95) return 'A+';
+            if (numeric >= 90) return 'A';
+            if (numeric >= 85) return 'A-';
+            if (numeric >= 80) return 'B+';
+            if (numeric >= 75) return 'B';
+            if (numeric >= 70) return 'B-';
+            if (numeric >= 65) return 'C+';
+            if (numeric >= 60) return 'C';
+            if (numeric >= 55) return 'C-';
+            return 'D';
+        }
+        
+        function letterToNumericGrade(letter) {
+            const gradeMap = {
+                'A+': 95,
+                'A': 90,
+                'A-': 85,
+                'B+': 80,
+                'B': 75,
+                'B-': 70,
+                'C+': 65,
+                'C': 60,
+                'C-': 55,
+                'D': 50
+            };
+            return gradeMap[letter] || 0;
         }
         
         function getTopStudent() {
@@ -1187,6 +1484,38 @@
             const worstAssignment = assignments.reduce((prev, current) => 
                 (prev.completedStudents.length < current.completedStudents.length) ? prev : current);
             return `${worstAssignment.title} (${Math.round((worstAssignment.completedStudents.length / students.length) * 100)}%)`;
+        }
+        
+        function getBestGradedAssignment() {
+            if (assignments.length === 0) return '-';
+            let bestAssignment = assignments[0];
+            let bestAverage = 0;
+            
+            assignments.forEach(assignment => {
+                const average = calculateAssignmentAverageNumericGrade(assignment.id);
+                if (average && parseFloat(average) > bestAverage) {
+                    bestAverage = parseFloat(average);
+                    bestAssignment = assignment;
+                }
+            });
+            
+            return bestAverage > 0 ? `${bestAssignment.title} (${calculateAssignmentAverageGrade(bestAssignment.id)})` : '-';
+        }
+        
+        function getWorstGradedAssignment() {
+            if (assignments.length === 0) return '-';
+            let worstAssignment = assignments[0];
+            let worstAverage = 100;
+            
+            assignments.forEach(assignment => {
+                const average = calculateAssignmentAverageNumericGrade(assignment.id);
+                if (average && parseFloat(average) < worstAverage) {
+                    worstAverage = parseFloat(average);
+                    worstAssignment = assignment;
+                }
+            });
+            
+            return worstAverage < 100 ? `${worstAssignment.title} (${calculateAssignmentAverageGrade(worstAssignment.id)})` : '-';
         }
         
         // Fungsi tambah siswa baru
@@ -1286,7 +1615,9 @@
                 id: Date.now().toString(),
                 title: assignmentTitle,
                 date: new Date().toLocaleDateString('id-ID'),
-                completedStudents: completedStudents
+                completedStudents: completedStudents,
+                grades: {}, // Object untuk menyimpan nilai huruf
+                numericGrades: {} // Object untuk menyimpan nilai angka
             };
             
             assignments.push(newAssignment);
@@ -1321,7 +1652,6 @@
         function updateStudentView() {
             renderPointsProgress();
             renderAssignmentsProgress();
-            updateStudentStats();
         }
         
         // Update tampilan untuk guru
@@ -1462,6 +1792,7 @@
                 const completedCount = student.completedAssignments ? student.completedAssignments.length : 0;
                 const percentage = totalAssignments > 0 ? (completedCount / totalAssignments) * 100 : 0;
                 const statusText = totalAssignments > 0 ? `${completedCount}/${totalAssignments} tugas` : 'Belum ada tugas';
+                const incompleteAssignments = getIncompleteAssignments(student.name);
                 
                 progressItem.innerHTML = `
                     <div class="student-name">
@@ -1475,6 +1806,16 @@
                         <span>0%</span>
                         <span>100%</span>
                     </div>
+                    ${incompleteAssignments.length > 0 ? `
+                        <div class="incomplete-assignments">
+                            <strong>Tugas yang belum dikerjakan:</strong>
+                            <div class="incomplete-assignment-list">
+                                ${incompleteAssignments.map(assignment => 
+                                    `<div class="incomplete-assignment-item">${assignment.title}</div>`
+                                ).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
                 `;
                 
                 assignmentsProgressList.appendChild(progressItem);
@@ -1495,6 +1836,8 @@
                 assignmentItem.className = 'assignment-item';
                 
                 const completionRate = Math.round((assignment.completedStudents.length / students.length) * 100);
+                const averageGrade = calculateAssignmentAverageGrade(assignment.id);
+                const averageNumericGrade = calculateAssignmentAverageNumericGrade(assignment.id);
                 
                 assignmentItem.innerHTML = `
                     <div class="assignment-header">
@@ -1504,18 +1847,33 @@
                             <span style="margin-left: 10px; color: ${completionRate === 100 ? 'var(--secondary)' : 'var(--warning)'}; font-weight: bold;">
                                 ${completionRate}% selesai
                             </span>
+                            ${averageGrade ? `<span class="grade-badge grade-${averageGrade.replace('+', 'plus').replace('-', 'minus')}">${averageGrade}</span>` : ''}
+                            ${averageNumericGrade ? `<span class="numeric-grade">(${averageNumericGrade})</span>` : ''}
                         </div>
                     </div>
                     <div class="assignment-students">
                         ${assignment.completedStudents.length > 0 ? 
-                            assignment.completedStudents.map(student => 
-                                `<span class="student-tag">${student}</span>`
-                            ).join('') : 
+                            assignment.completedStudents.map(student => {
+                                const grade = assignment.grades && assignment.grades[student];
+                                const numericGrade = assignment.numericGrades && assignment.numericGrades[student];
+                                return `<span class="student-tag">${student}${grade ? ` <span class="grade-badge grade-${grade.replace('+', 'plus').replace('-', 'minus')}">${grade}</span>` : ''}${numericGrade ? ` <span class="numeric-grade">(${numericGrade})</span>` : ''}</span>`;
+                            }).join('') : 
                             '<span style="color: #666; font-style: italic;">Belum ada siswa yang menyelesaikan</span>'
                         }
                     </div>
+                    <div class="assignment-details" id="assignment-details-${assignment.id}" style="display: none;">
+                        <h4>Edit Status Penyelesaian dan Nilai:</h4>
+                        <div id="assignment-grades-${assignment.id}">
+                            <!-- Daftar siswa dengan checkbox dan nilai akan ditampilkan di sini -->
+                        </div>
+                        <div class="assignment-actions">
+                            <button onclick="saveAssignmentGrades('${assignment.id}')" class="btn-secondary">Simpan Perubahan</button>
+                            <button onclick="hideAssignmentDetails('${assignment.id}')" class="logout-btn">Batal</button>
+                        </div>
+                    </div>
                     <div class="assignment-actions">
-                        <button onclick="editAssignment('${assignment.id}')" class="btn-warning">Edit Tugas</button>
+                        <button onclick="showAssignmentDetails('${assignment.id}')" class="btn-warning">Edit Tugas & Nilai</button>
+                        <button onclick="editAssignment('${assignment.id}')" class="btn-warning">Edit Judul</button>
                         <button onclick="deleteAssignment('${assignment.id}')" class="btn-danger">Hapus Tugas</button>
                     </div>
                 `;
@@ -1524,25 +1882,177 @@
             });
         }
         
-        // Update statistik untuk tampilan murid
-        function updateStudentStats() {
-            const totalStudents = students.length;
-            const totalPoints = students.reduce((sum, student) => sum + student.points, 0);
-            const avgPoints = totalStudents > 0 ? (totalPoints / totalStudents).toFixed(1) : 0;
-            const maxPoints = totalStudents > 0 ? Math.max(...students.map(s => s.points)) : 0;
-            const activeStudents = totalStudents > 0 ? students.filter(s => s.points > 0).length : 0;
-            const totalAssignments = assignments.length;
-            const completedTasks = totalStudents > 0 && totalAssignments > 0 ? 
-                Math.round((students.reduce((sum, student) => sum + (student.completedAssignments ? student.completedAssignments.length : 0), 0) / (totalStudents * totalAssignments)) * 100) : 0;
-            const incompleteStudents = totalStudents > 0 ? 
-                students.filter(s => !s.completedAssignments || s.completedAssignments.length < totalAssignments).length : 0;
+        // Fungsi untuk menampilkan detail edit tugas
+        function showAssignmentDetails(assignmentId) {
+            const assignment = assignments.find(a => a.id === assignmentId);
+            if (!assignment) return;
             
-            avgPointsElement.textContent = avgPoints;
-            maxPointsElement.textContent = maxPoints;
-            activeStudentsElement.textContent = activeStudents;
-            completedTasksElement.textContent = `${completedTasks}%`;
-            totalStudentsElement.textContent = totalStudents;
-            incompleteStudentsElement.textContent = incompleteStudents;
+            const detailsElement = document.getElementById(`assignment-details-${assignmentId}`);
+            const gradesElement = document.getElementById(`assignment-grades-${assignmentId}`);
+            
+            gradesElement.innerHTML = '';
+            
+            students.forEach(student => {
+                const isCompleted = assignment.completedStudents.includes(student.name);
+                const currentGrade = assignment.grades && assignment.grades[student.name];
+                const currentNumericGrade = assignment.numericGrades && assignment.numericGrades[student.name];
+                
+                const gradeItem = document.createElement('div');
+                gradeItem.className = 'student-grade-item';
+                
+                gradeItem.innerHTML = `
+                    <div>
+                        <input type="checkbox" id="grade-${assignmentId}-${student.name.replace(/\s+/g, '-')}" 
+                               ${isCompleted ? 'checked' : ''} value="${student.name}">
+                        <label for="grade-${assignmentId}-${student.name.replace(/\s+/g, '-')}">${student.name}</label>
+                    </div>
+                    <div class="grade-input-group">
+                        <select class="grade-type-select" id="grade-type-${assignmentId}-${student.name.replace(/\s+/g, '-')}" onchange="handleGradeTypeChange('${assignmentId}', '${student.name}')">
+                            ${GRADE_TYPE_OPTIONS.map(type => 
+                                `<option value="${type}">${type}</option>`
+                            ).join('')}
+                        </select>
+                        <select class="grade-select" id="grade-value-letter-${assignmentId}-${student.name.replace(/\s+/g, '-')}" style="display: none;">
+                            <option value="">Belum dinilai</option>
+                            ${LETTER_GRADE_OPTIONS.map(grade => 
+                                `<option value="${grade}" ${currentGrade === grade ? 'selected' : ''}>${grade}</option>`
+                            ).join('')}
+                        </select>
+                        <input type="number" class="grade-value-input" id="grade-value-numeric-${assignmentId}-${student.name.replace(/\s+/g, '-')}" 
+                               min="0" max="100" placeholder="0-100" value="${currentNumericGrade || ''}" style="display: none;">
+                    </div>
+                `;
+                
+                gradesElement.appendChild(gradeItem);
+                
+                // Set initial display based on existing grade
+                if (currentNumericGrade !== undefined && currentNumericGrade !== null) {
+                    document.getElementById(`grade-type-${assignmentId}-${student.name.replace(/\s+/g, '-')}`).value = 'Angka';
+                    document.getElementById(`grade-value-numeric-${assignmentId}-${student.name.replace(/\s+/g, '-')}`).style.display = 'block';
+                } else {
+                    document.getElementById(`grade-type-${assignmentId}-${student.name.replace(/\s+/g, '-')}`).value = 'Huruf';
+                    document.getElementById(`grade-value-letter-${assignmentId}-${student.name.replace(/\s+/g, '-')}`).style.display = 'block';
+                }
+            });
+            
+            detailsElement.style.display = 'block';
+        }
+        
+        // Fungsi untuk menangani perubahan jenis nilai
+        function handleGradeTypeChange(assignmentId, studentName) {
+            const gradeType = document.getElementById(`grade-type-${assignmentId}-${studentName.replace(/\s+/g, '-')}`).value;
+            const letterSelect = document.getElementById(`grade-value-letter-${assignmentId}-${studentName.replace(/\s+/g, '-')}`);
+            const numericInput = document.getElementById(`grade-value-numeric-${assignmentId}-${studentName.replace(/\s+/g, '-')}`);
+            
+            if (gradeType === 'Huruf') {
+                letterSelect.style.display = 'block';
+                numericInput.style.display = 'none';
+                
+                // Convert existing numeric grade to letter if available
+                if (numericInput.value && !letterSelect.value) {
+                    const numericValue = parseFloat(numericInput.value);
+                    const letterGrade = numericToLetterGrade(numericValue);
+                    letterSelect.value = letterGrade;
+                }
+            } else {
+                letterSelect.style.display = 'none';
+                numericInput.style.display = 'block';
+                
+                // Convert existing letter grade to numeric if available
+                if (letterSelect.value && !numericInput.value) {
+                    const letterGrade = letterSelect.value;
+                    const numericValue = letterToNumericGrade(letterGrade);
+                    numericInput.value = numericValue;
+                }
+            }
+        }
+        
+        // Fungsi untuk menyembunyikan detail edit tugas
+        function hideAssignmentDetails(assignmentId) {
+            const detailsElement = document.getElementById(`assignment-details-${assignmentId}`);
+            detailsElement.style.display = 'none';
+        }
+        
+        // Fungsi untuk menyimpan perubahan status dan nilai tugas
+        function saveAssignmentGrades(assignmentId) {
+            const assignment = assignments.find(a => a.id === assignmentId);
+            if (!assignment) return;
+            
+            // Reset completed students
+            assignment.completedStudents = [];
+            
+            // Update completed students and grades
+            students.forEach(student => {
+                const checkbox = document.getElementById(`grade-${assignmentId}-${student.name.replace(/\s+/g, '-')}`);
+                const gradeType = document.getElementById(`grade-type-${assignmentId}-${student.name.replace(/\s+/g, '-')}`).value;
+                const letterGrade = document.getElementById(`grade-value-letter-${assignmentId}-${student.name.replace(/\s+/g, '-')}`).value;
+                const numericGrade = document.getElementById(`grade-value-numeric-${assignmentId}-${student.name.replace(/\s+/g, '-')}`).value;
+                
+                if (checkbox.checked) {
+                    assignment.completedStudents.push(student.name);
+                    
+                    // Update grades based on type
+                    if (gradeType === 'Huruf') {
+                        if (!assignment.grades) {
+                            assignment.grades = {};
+                        }
+                        assignment.grades[student.name] = letterGrade || null;
+                        
+                        // Also update numeric grade for consistency
+                        if (!assignment.numericGrades) {
+                            assignment.numericGrades = {};
+                        }
+                        assignment.numericGrades[student.name] = letterGrade ? letterToNumericGrade(letterGrade) : null;
+                    } else {
+                        if (!assignment.numericGrades) {
+                            assignment.numericGrades = {};
+                        }
+                        assignment.numericGrades[student.name] = numericGrade || null;
+                        
+                        // Also update letter grade for consistency
+                        if (!assignment.grades) {
+                            assignment.grades = {};
+                        }
+                        assignment.grades[student.name] = numericGrade ? numericToLetterGrade(parseFloat(numericGrade)) : null;
+                    }
+                } else {
+                    // Remove grade if student is not completed
+                    if (assignment.grades && assignment.grades[student.name]) {
+                        delete assignment.grades[student.name];
+                    }
+                    if (assignment.numericGrades && assignment.numericGrades[student.name]) {
+                        delete assignment.numericGrades[student.name];
+                    }
+                }
+            });
+            
+            // Update student completed assignments
+            students.forEach(student => {
+                if (!student.completedAssignments) {
+                    student.completedAssignments = [];
+                }
+                
+                if (assignment.completedStudents.includes(student.name)) {
+                    // Add to completed if not already there
+                    if (!student.completedAssignments.includes(assignmentId)) {
+                        student.completedAssignments.push(assignmentId);
+                    }
+                } else {
+                    // Remove from completed
+                    student.completedAssignments = student.completedAssignments.filter(id => id !== assignmentId);
+                }
+            });
+            
+            // Save to localStorage
+            localStorage.setItem('assignments', JSON.stringify(assignments));
+            localStorage.setItem('students', JSON.stringify(students));
+            
+            // Update display
+            updateTeacherView();
+            updateStudentView();
+            
+            hideAssignmentDetails(assignmentId);
+            alert('Perubahan tugas dan nilai berhasil disimpan!');
         }
         
         // Update statistik untuk tampilan guru
@@ -1566,7 +2076,7 @@
             if (students.length === 0) {
                 studentTableBody.innerHTML = `
                     <tr>
-                        <td colspan="4" style="text-align: center; color: #666;">Belum ada data siswa</td>
+                        <td colspan="5" style="text-align: center; color: #666;">Belum ada data siswa</td>
                     </tr>
                 `;
                 return;
@@ -1577,12 +2087,22 @@
             students.forEach((student, index) => {
                 const row = document.createElement('tr');
                 const completedCount = student.completedAssignments ? student.completedAssignments.length : 0;
+                const averageGrade = calculateStudentAverageGrade(student.name);
+                const averageNumericGrade = calculateStudentAverageNumericGrade(student.name);
                 
                 row.innerHTML = `
                     <td>${student.name}</td>
                     <td>${student.points} <span class="star">★</span></td>
                     <td class="${completedCount === totalAssignments ? 'completed' : 'incomplete'}">
                         ${completedCount}/${totalAssignments}
+                    </td>
+                    <td>
+                        ${averageGrade ? `
+                            <div class="grade-display">
+                                <span class="grade-badge grade-${averageGrade.replace('+', 'plus').replace('-', 'minus')}">${averageGrade}</span>
+                                ${averageNumericGrade ? `<span class="numeric-grade">(${averageNumericGrade})</span>` : ''}
+                            </div>
+                        ` : '-'}
                     </td>
                     <td>
                         <button onclick="editStudentPoints('${student.name}')" class="btn-warning">Edit Poin</button>
@@ -1634,6 +2154,18 @@
                 if (index !== -1) {
                     assignment.completedStudents[index] = newName;
                 }
+                
+                // Update grades
+                if (assignment.grades && assignment.grades[oldName]) {
+                    assignment.grades[newName] = assignment.grades[oldName];
+                    delete assignment.grades[oldName];
+                }
+                
+                // Update numeric grades
+                if (assignment.numericGrades && assignment.numericGrades[oldName]) {
+                    assignment.numericGrades[newName] = assignment.numericGrades[oldName];
+                    delete assignment.numericGrades[oldName];
+                }
             });
             
             // Simpan ke localStorage
@@ -1655,6 +2187,16 @@
                 // Hapus juga dari semua tugas
                 assignments.forEach(assignment => {
                     assignment.completedStudents = assignment.completedStudents.filter(studentName => studentName !== name);
+                    
+                    // Hapus grades
+                    if (assignment.grades && assignment.grades[name]) {
+                        delete assignment.grades[name];
+                    }
+                    
+                    // Hapus numeric grades
+                    if (assignment.numericGrades && assignment.numericGrades[name]) {
+                        delete assignment.numericGrades[name];
+                    }
                 });
                 
                 localStorage.setItem('students', JSON.stringify(students));
