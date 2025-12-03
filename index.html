@@ -962,7 +962,8 @@
         • <strong>Vertikal:</strong> Bergerak naik-turun karena pengaruh gravitasi</p>
       </div>
      </div>
-    </section><!-- Materi Tab -->
+    
+     </section><!-- Materi Tab -->
     <section id="materi" class="tab-content hidden">
      <div class="bg-white rounded-xl shadow-lg p-8">
       <h2 class="text-3xl font-bold text-gray-800 mb-6">Analisis Gerak Parabola</h2>
@@ -1003,20 +1004,40 @@
              <marker id="arrow" markerwidth="5" markerheight="4" refx="4" refy="2" orient="auto" markerunits="strokeWidth">
               <path d="M0,0 L0,4 L5,2 z" fill="#059669" />
              </marker>
-            </defs> <rect width="100%" height="100%" fill="url(#grid)" /> <!-- Ground --> <rect x="0" y="180" width="400" height="20" fill="#8b5cf6" opacity="0.3" /> <!-- Perfect parabolic trajectory path (animated dashes) --> <path id="animated-path" d="M 50 180 Q 200 80 350 180" stroke="#ef4444" stroke-width="3" fill="none" stroke-dasharray="8,4" stroke-dashoffset="0">
+            </defs> <rect width="100%" height="100%" fill="url(#grid)" /> <!-- Ground --> <rect x="0" y="180" width="400" height="20" fill="#8b5cf6" opacity="0.3" /> <!-- Perfect parabolic trajectory path (animated dashes) --> <path id="animated-path" d="M 50 170 Q 200 50 350 170" stroke="#ef4444" stroke-width="3" fill="none" stroke-dasharray="8,4" stroke-dashoffset="0">
              <animate attributename="stroke-dashoffset" values="0;-12" dur="0.6s" repeatcount="indefinite" />
             </path> <!-- Moving projectile --> <circle id="moving-projectile" r="7" fill="#fbbf24" stroke="#f59e0b" stroke-width="2">
              <animatemotion dur="4s" repeatcount="indefinite">
               <mpath href="#trajectory-motion-path" />
              </animatemotion>
-            </circle> <!-- Perfect parabolic path for motion --> <path id="trajectory-motion-path" d="M 50 180 Q 200 80 350 180" fill="none" opacity="0" /> <!-- Horizontal velocity vector that follows projectile --> <g id="velocity-vector">
-             <line id="velocity-line" stroke="#059669" stroke-width="4" marker-end="url(#arrow)" x1="0" y1="0" x2="45" y2="0" />
+            </circle> <!-- Perfect parabolic path for motion --> <path id="trajectory-motion-path" d="M 50 170 Q 200 50 350 170" fill="none" opacity="0" /> <!-- Horizontal velocity vector that follows projectile --> <g id="velocity-vector">
+             <line id="velocity-line" stroke="#059669" stroke-width="4" marker-end="url(#arrow)" />
              <animatemotion dur="4s" repeatcount="indefinite">
               <mpath href="#trajectory-motion-path" />
              </animatemotion>
-            </g> <!-- Initial angle indicator --> <path d="M 50 180 L 80 180 A 30 30 0 0 0 65 155" stroke="#374151" stroke-width="2" fill="none" /> <text x="62" y="162" class="text-sm fill-current text-gray-800 font-bold">
+            </g> <!-- Initial angle indicator --> <path d="M 50 170 L 80 170 A 30 30 0 0 0 72 155" stroke="#374151" stroke-width="2" fill="none" /> <text x="68" y="162" class="text-sm fill-current text-gray-800 font-bold">
              α
-            </text> <!-- Control button --> <!-- Control button --> <g transform="translate(330, 10)">
+            </text> <!-- Clear title --> <rect x="5" y="5" width="390" height="25" fill="white" opacity="0.9" rx="5" /> <text x="200" y="20" text-anchor="middle" class="text-sm fill-current text-gray-800 font-bold">
+             Ilustrasi Vektor Kecepatan Horizontal (vₓ) - Animasi
+            </text> <!-- Legend with better background --> <g transform="translate(10, 35)">
+             <rect x="-5" y="-5" width="380" height="50" fill="white" opacity="0.9" rx="5" /> <!-- Projectile legend -->
+             <circle cx="10" cy="10" r="5" fill="#fbbf24" stroke="#f59e0b" stroke-width="2" />
+             <text x="20" y="15" class="text-sm fill-current text-gray-800 font-semibold">
+              Proyektil Bergerak
+             </text> <!-- Velocity vector legend -->
+             <line x1="10" y1="30" x2="50" y2="30" stroke="#059669" stroke-width="4" marker-end="url(#arrow)" />
+             <text x="55" y="35" class="text-sm fill-current text-gray-800 font-semibold">
+              vₓ = konstan (selalu sama panjang)
+             </text> <!-- Trajectory legend -->
+             <line x1="250" y1="10" x2="290" y2="10" stroke="#ef4444" stroke-width="3" stroke-dasharray="5,5" />
+             <text x="295" y="15" class="text-sm fill-current text-gray-800 font-semibold">
+              Lintasan Parabola
+             </text> <!-- Angle legend -->
+             <path d="M 250 30 L 270 30 A 15 15 0 0 0 265 20" stroke="#374151" stroke-width="2" fill="none" />
+             <text x="275" y="35" class="text-sm fill-current text-gray-800 font-semibold">
+              Sudut Elevasi (α)
+             </text>
+            </g> <!-- Control button --> <g transform="translate(10, 170)">
              <rect id="play-pause-btn" x="0" y="0" width="60" height="25" rx="12" fill="#3b82f6" stroke="#1d4ed8" stroke-width="1" cursor="pointer" opacity="0.9" />
              <text id="play-pause-text" x="30" y="17" text-anchor="middle" class="text-xs fill-white font-semibold cursor-pointer">
               ⏸ Pause
@@ -1050,7 +1071,6 @@
            <p><strong>Ketinggian:</strong> y = (kecepatan awal × waktu) - ½ × gravitasi × waktu²</p>
            <p><strong>Percepatan:</strong> a<sub>y</sub> = -g</p>
           </div>
-         
          </div><!-- Ilustrasi Vektor Kecepatan Vertikal -->
          <div class="bg-white p-4 rounded-lg border-2 border-red-200 mb-4">
           <h6 class="font-bold text-red-800 mb-3 text-center">📊 Ilustrasi Vektor Kecepatan Vertikal (Animasi)</h6>
@@ -1073,7 +1093,7 @@
              <animatemotion dur="4s" repeatcount="indefinite">
               <mpath href="#vertical-trajectory-motion-path" />
              </animatemotion>
-            </g> <!-- Initial angle indicator --> <path d="M 50 170 L 80 170 A 30 30 0 0 0 65 150" stroke="#374151" stroke-width="2" fill="none" /> <text x="85" y="165" class="text-sm fill-current text-gray-800 font-bold">
+            </g> <!-- Initial angle indicator --> <path d="M 50 170 L 80 170 A 30 30 0 0 0 72 155" stroke="#374151" stroke-width="2" fill="none" /> <text x="68" y="162" class="text-sm fill-current text-gray-800 font-bold">
              α
             </text> <!-- Clear title --> <rect x="5" y="5" width="390" height="25" fill="white" opacity="0.9" rx="5" /> <text x="200" y="20" text-anchor="middle" class="text-sm fill-current text-gray-800 font-bold">
              Ilustrasi Vektor Kecepatan Vertikal (vᵧ) - Animasi
@@ -1106,7 +1126,7 @@
             </g>
            </svg>
           </div>
-          <p class="text-xs text-red-600 mt-2 text-center"><strong>Animasi menunjukkan:</strong> Proyektil bergerak mengikuti lintasan parabola dengan vektor kecepatan vertikal (panah merah) yang berubah panjang - memendek saat naik, hilang di puncak, memanjang saat turun</p>
+          <p class="text-xs text-red-600 mt-2 text-center"><strong>Animasi menunjukkan</strong> proyektil bergerak dengan kecepatan vertikal yang melambat saat bergerak ke atas dan bertambah saat bergerak ke bawah seperti gerak vertikal ke atas kemudian menjadi gerak vertikal ke bawah</p>
          </div>
         </div>
        </div><!-- Kesimpulan -->
@@ -1133,8 +1153,8 @@
        </div>
       </div>
      </div>
-          
-       </div><!-- Ilustrasi Penjumlahan Vektor Kecepatan Total -->
+    
+    </div><!-- Ilustrasi Penjumlahan Vektor Kecepatan Total -->
        <div class="mt-8 bg-white p-6 rounded-lg border-2 border-purple-200">
         <h4 class="text-xl font-bold text-purple-800 mb-4 text-center">🎯 Penjumlahan Vektor Kecepatan Total</h4>
         <p class="text-gray-700 mb-4 text-center text-base leading-relaxed"><strong>Kecepatan total proyektil</strong> adalah hasil penjumlahan vektor kecepatan horizontal (vₓ) dan vertikal (vᵧ)</p>
